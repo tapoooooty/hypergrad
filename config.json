@@ -1,0 +1,138 @@
+{
+  "dex": {
+    "code": "grad",
+    "full_name": "HyperGrad Memecoin Perps",
+    "collateral_token": 0,
+    "oracle_updater": null,
+    "fee_recipient": null
+  },
+  "tiers": {
+    "tier0": {
+      "label": "Graduate (in the GRAD index)",
+      "min_mcap_usd": 500000,
+      "min_liquidity_usd": 50000,
+      "min_age_hours": 24,
+      "min_volume_24h_usd": 100000,
+      "sustain_hours": 6
+    },
+    "tier1": {
+      "label": "Own perp",
+      "min_mcap_usd": 5000000,
+      "min_liquidity_usd": 500000,
+      "min_age_hours": 72,
+      "min_volume_24h_usd": 1000000,
+      "sustain_hours": 24,
+      "max_leverage": 3,
+      "oi_cap_usd": 1000000
+    },
+    "tier2": {
+      "label": "Blue chip",
+      "min_mcap_usd": 25000000,
+      "min_liquidity_usd": 2000000,
+      "min_age_hours": 168,
+      "min_volume_24h_usd": 5000000,
+      "sustain_hours": 24,
+      "max_leverage": 5,
+      "oi_cap_usd": 3000000
+    }
+  },
+  "safety": {
+    "require_pump_fun_origin": true,
+    "max_top10_holders_pct": 30,
+    "max_dev_holding_pct": 5,
+    "max_price_change_1h_pct": 300,
+    "check_holders": true
+  },
+  "index": {
+    "symbol": "GRAD",
+    "max_components": 50,
+    "max_weight": 0.1,
+    "rebalance_hours": 24,
+    "base_level": 1000.0,
+    "max_leverage": 3,
+    "oi_cap_usd": 1000000
+  },
+  "oracle": {
+    "sources": [
+      "dexscreener",
+      "jupiter"
+    ],
+    "min_sources": 1,
+    "update_interval_sec": 3.0,
+    "ema_alpha": 0.3,
+    "max_source_deviation_pct": 15.0,
+    "alert_move_pct_per_min": 40.0,
+    "auto_halt_after_freeze_sec": 120,
+    "stale_source_sec": 60,
+    "standby_primary_url": null,
+    "failover_after_sec": 10
+  },
+  "fees": {
+    "scale": "1.0",
+    "growth_mode": false
+  },
+  "delisting": {
+    "below_threshold_ratio": 0.5,
+    "below_threshold_hours": 24,
+    "min_liquidity_ratio": 0.5,
+    "auto_halt": true
+  },
+  "manager": {
+    "scan_interval_min": 10,
+    "auto_list_tier1": false,
+    "max_single_perps": 10
+  },
+  "sources": {
+    "pumpfun_pages": 4,
+    "solana_rpc": "https://api.mainnet-beta.solana.com"
+  },
+  "dashboard": {
+    "host": "127.0.0.1",
+    "port": 8787
+  },
+  "telegram": {
+    "enabled": true,
+    "kinds": [
+      "alert",
+      "halt",
+      "error",
+      "watchdog",
+      "listing",
+      "candidate",
+      "delist?",
+      "heartbeat",
+      "oracle",
+      "warn",
+      "mm"
+    ],
+    "dedup_sec": 300,
+    "watchdog_stale_sec": 30,
+    "heartbeat_hours": 12
+  },
+  "funding": {
+    "multiplier": "1.0",
+    "clamp_8h": "0.0006"
+  },
+  "market_maker": {
+    "enabled": false,
+    "markets": [
+      "GRAD"
+    ],
+    "levels": 3,
+    "level_spacing_bps": 25,
+    "base_spread_bps": 40,
+    "vol_spread_mult": 1.5,
+    "order_size_usd": 250,
+    "max_position_usd": 5000,
+    "skew_bps_at_max": 60,
+    "requote_bps": 8,
+    "requote_sec": 15,
+    "loop_sec": 3,
+    "leverage": 3,
+    "max_oracle_age_sec": 15
+  },
+  "backtest": {
+    "timeframe": "minute",
+    "limit": 1000
+  }
+}
