@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HyperGrad</title>
+<link rel="icon" href="logo.svg">
+<style>
+  :root{
+    --pine:#0B2420; --surface:#0E2C27; --raise:#123630; --line:#1F4A42;
+    --text:#EAF7F2; --muted:#86A69D; --faint:#557A70;
+    --mint:#97FCE4; --mint-dim:#5FC8B0; --amber:#F2B544; --red:#F26B5B;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--pine);color:var(--text);font:14px/1.45 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums}
+  a{color:inherit;text-decoration:none}
+  a:hover{color:var(--mint)}
+  :focus-visible{outline:2px solid var(--mint);outline-offset:2px}
+
+  .top{display:flex;align-items:center;gap:20px;padding:14px 28px;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:10px;font:600 18px "Inter Display",Inter,sans-serif;letter-spacing:-.01em}
+  .brand img{width:28px;height:28px}
+  .net{padding:3px 10px;border-radius:6px;font-size:12.5px;font-weight:500;background:var(--raise);color:var(--muted)}
+  .net.mainnet{background:rgba(242,107,91,.14);color:var(--red)}
+  .top .spacer{flex:1}
+  .oracle-state{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--faint)}
+  .dot.ok{background:var(--mint);box-shadow:0 0 0 3px rgba(151,252,228,.15)}
+  .dot.bad{background:var(--red)}
+
+  .strip{display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid var(--line)}
+  .strip > div{padding:16px 28px;border-right:1px solid var(--line)}
+  .strip > div:last-child{border-right:none}
+  .strip .v{font:600 26px "Inter Display",Inter,sans-serif;letter-spacing:-.02em}
+  .strip .k{color:var(--muted);font-size:13px;margin-top:2px}
+
+  main{display:grid;grid-template-columns:minmax(0,1fr) 440px;min-height:calc(100vh - 160px)}
+  .feed{padding:22px 28px;border-right:1px solid var(--line);min-width:0}
+  aside{display:flex;flex-direction:column}
+  aside section{padding:22px 24px;border-bottom:1px solid var(--line)}
+  h2{margin:0;font:600 16px "Inter Display",Inter,sans-serif;letter-spacing:-.01em}
+  .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:12px}
+  .sub{color:var(--muted);font-size:13px}
+
+  .seg{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:2px}
+  .seg button{border:0;background:none;color:var(--muted);font:500 13px Inter,sans-serif;padding:5px 12px;border-radius:6px;cursor:pointer}
+  .seg button.on{background:var(--raise);color:var(--text)}
+
+  .scroll{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;white-space:nowrap}
+  th{font-weight:500;font-size:12.5px;color:var(--muted);text-align:right;padding:8px 10px;border-bottom:1px solid var(--line)}
+  td{text-align:right;padding:9px 10px;border-bottom:1px solid rgba(31,74,66,.55)}
+  th:first-child,td:first-child{text-align:left;padding-left:0}
+  tbody tr:hover td{background:rgba(18,54,48,.6)}
+  .coin b{font-weight:600}
+  .coin span{color:var(--muted);margin-left:6px;display:inline-block;max-width:130px;overflow:hidden;text-overflow:ellipsis;vertical-align:bottom}
+  .tier{display:inline-block;min-width:58px;text-align:center;padding:2px 8px;border-radius:5px;font-size:12px;font-weight:600}
+  .t-tier0{border:1px solid var(--mint-dim);color:var(--mint)}
+  .t-tier1{background:var(--mint);color:var(--pine)}
+  .t-tier2{background:var(--amber);color:var(--pine)}
+  .t-watch{color:var(--faint);border:1px solid var(--line)}
+  .up{color:var(--mint)} .down{color:var(--red)} .warn{color:var(--amber)}
+  .why{white-space:normal;min-width:170px;max-width:240px;text-align:left!important;color:var(--muted);font-size:13px;line-height:1.35}
+  svg.spark{width:76px;height:20px;vertical-align:middle}
+
+  .mk td{padding:8px 6px}
+  .mk td:first-child{padding-left:0}
+  .status{font-size:12.5px;font-weight:500}
+  .mult{color:var(--faint);font-size:12px;margin-left:4px}
+
+  .w{display:grid;grid-template-columns:120px 1fr 46px;gap:10px;align-items:center;margin:7px 0;font-size:13px}
+  .w .bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+  .w .bar i{display:block;height:100%;background:var(--mint-dim)}
+  .w .pct{text-align:right;color:var(--muted)}
+
+  .events{max-height:440px;overflow:auto}
+  .ev{display:grid;grid-template-columns:62px 1fr;gap:10px;padding:8px 0;border-bottom:1px solid rgba(31,74,66,.55);font-size:13px}
+  .ev time{color:var(--faint)}
+  .ev.k-alert span,.ev.k-watchdog span{color:var(--amber)}
+  .ev.k-halt span,.ev.k-error span{color:var(--red)}
+  .ev.k-listing span,.ev.k-candidate span{color:var(--mint)}
+  .empty{color:var(--muted);padding:18px 0}
+
+  @media (max-width:1100px){main{grid-template-columns:1fr}.feed{border-right:none}.strip{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><img src="logo.svg" alt="">HyperGrad</div>
+  <span class="net" id="net">testnet</span>
+  <span class="sub" id="dex">dex grad</span>
+  <span class="spacer"></span>
+  <span class="oracle-state"><i class="dot" id="odot"></i><span id="otext">Oracle offline</span></span>
+  <span class="sub" id="upd">Connecting…</span>
+</header>
+
+<div class="strip">
+  <div><div class="v" id="s-watch">0</div><div class="k">On the watchlist</div></div>
+  <div><div class="v" id="s-t0">0</div><div class="k">In the GRAD index</div></div>
+  <div><div class="v" id="s-t1">0</div><div class="k">Ready for their own perp</div></div>
+  <div><div class="v" id="s-live">0</div><div class="k">Live markets</div></div>
+  <div><div class="v" id="s-lvl">-</div><div class="k">GRAD level</div></div>
+</div>
+
+<main>
+  <div class="feed">
+    <div class="head">
+      <div><h2>Graduates</h2><div class="sub">Solana coins from pump.fun, sorted by market cap</div></div>
+      <div class="seg" id="filters" role="group" aria-label="Filter by tier">
+        <button data-f="all" class="on">All</button>
+        <button data-f="tier0">Tier 0+</button>
+        <button data-f="tier1">Tier 1+</button>
+        <button data-f="watch">Watchlist</button>
+      </div>
+    </div>
+    <div class="scroll"><table>
+      <thead><tr><th>Coin</th><th>Tier</th><th>Market cap</th><th>Last 8 h</th><th>Liquidity</th><th>24h volume</th><th>1h</th><th>Age</th><th>Top 10</th><th style="text-align:left">Waiting on</th></tr></thead>
+      <tbody id="cands"></tbody>
+    </table></div>
+  </div>
+
+  <aside>
+    <section>
+      <div class="head"><h2>Markets</h2><span class="sub" id="mk-count"></span></div>
+      <table class="mk"><thead><tr><th>Market</th><th>Status</th><th>Spot</th><th>Mark</th><th>OI</th></tr></thead><tbody id="markets"></tbody></table>
+      <div class="sub warn" id="live-err"></div>
+    </section>
+    <section>
+      <div class="head"><h2>GRAD composition</h2><span class="sub" id="rebal"></span></div>
+      <div id="index"></div>
+    </section>
+    <section style="border-bottom:none">
+      <div class="head"><h2>Events</h2></div>
+      <div class="events" id="events"></div>
+    </section>
+  </aside>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const usd = v => v == null ? '-' : '$' + (v >= 1e9 ? (v/1e9).toFixed(2)+'B' : v >= 1e6 ? (v/1e6).toFixed(2)+'M' : v >= 1e3 ? Math.round(v/1e3)+'K' : Math.round(v));
+const px = v => v == null ? '-' : (+v).toPrecision(5).replace(/\.?0+$/,'');
+const rank = t => ({tier2:3, tier1:2, tier0:1})[t] || 0;
+const ago = s => s < 60 ? `${s}s ago` : s < 3600 ? `${Math.floor(s/60)}m ago` : `${Math.floor(s/3600)}h ago`;
+let filter = 'all', last = null;
+
+$('filters').addEventListener('click', e => {
+  const f = e.target.dataset.f; if (!f) return;
+  filter = f;
+  [...$('filters').children].forEach(b => b.classList.toggle('on', b === e.target));
+  if (last) render(last);
+});
+
+function spark(a){
+  if (!a || a.length < 2) return '';
+  const mn = Math.min(...a), mx = Math.max(...a), r = mx - mn || 1;
+  const p = a.map((v,i) => `${(i/(a.length-1)*76).toFixed(1)},${(18 - (v-mn)/r*16).toFixed(1)}`).join(' ');
+  const c = a[a.length-1] >= a[0] ? '#97FCE4' : '#F26B5B';
+  return `<svg class="spark" aria-hidden="true"><polyline fill="none" stroke="${c}" stroke-width="1.4" points="${p}"/></svg>`;
+}
+
+function render(d){
+  last = d;
+  const now = d.server_ts;
+  $('net').textContent = d.network; $('net').className = 'net ' + d.network;
+  $('dex').textContent = 'dex ' + d.dex;
+  $('upd').textContent = 'Updated ' + new Date(now*1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+
+  const oa = d.oracle_alive && d.oracle_alive.ts ? now - d.oracle_alive.ts : null;
+  const live = Object.values(d.markets || {}).filter(m => m.status === 'live').length;
+  $('odot').className = 'dot ' + (oa == null ? '' : oa < 15 ? 'ok' : 'bad');
+  $('otext').textContent = oa == null ? 'Oracle has not run yet' : oa < 15 ? `Oracle live, last push ${ago(oa)}` : `Oracle silent for ${ago(oa).replace(' ago','')}`;
+
+  const c = d.candidates || [];
+  $('s-watch').textContent = c.filter(x => !x.tier).length;
+  $('s-t0').textContent = Object.keys((d.index||{}).weights || {}).length;
+  $('s-t1').textContent = c.filter(x => rank(x.tier) >= 2).length;
+  $('s-live').textContent = live;
+  $('s-lvl').textContent = d.index && d.index.level ? (+d.index.level).toFixed(2) : '-';
+
+  const rows = c.filter(x => filter === 'all' || (filter === 'watch' ? !x.tier : rank(x.tier) >= rank(filter)));
+  $('cands').innerHTML = rows.slice(0, 200).map(x => {
+    const age = x.created_ms ? Math.round((now*1000 - x.created_ms)/3.6e6) : null;
+    const ch = x.price_change_1h_pct || 0;
+    const t = x.tier || 'watch';
+    const label = {tier0:'Tier 0', tier1:'Tier 1', tier2:'Tier 2', watch:'Watch'}[t];
+    return `<tr>
+      <td class="coin"><a href="${esc(x.url)}" target="_blank" rel="noopener"><b>${esc(x.symbol)}</b></a><span>${esc((x.name||'').slice(0,22))}</span></td>
+      <td><span class="tier t-${t}">${label}</span></td>
+      <td>${usd(x.mcap_usd)}</td><td>${spark(x.spark)}</td>
+      <td>${usd(x.liquidity_usd)}</td><td>${usd(x.volume_24h_usd)}</td>
+      <td class="${ch >= 0 ? 'up' : 'down'}">${ch >= 0 ? '+' : ''}${ch.toFixed(1)}%</td>
+      <td>${age == null ? '-' : age < 48 ? age + 'h' : Math.round(age/24) + 'd'}</td>
+      <td class="${x.top10_pct > 30 ? 'warn' : ''}">${x.top10_pct == null ? '-' : x.top10_pct.toFixed(1) + '%'}</td>
+      <td class="why" title="${esc((x.next_tier_blockers||[]).join('; '))}">${esc((x.next_tier_blockers||[])[0] || (t === 'tier2' ? 'Top tier' : ''))}</td></tr>`;
+  }).join('') || '<tr><td colspan="10" class="empty">No coins yet. Run scan.bat or start the manager to fill this list.</td></tr>';
+
+  const liveMeta = Array.isArray(d.live) ? Object.fromEntries(d.live.map(a => [a.name, a])) : {};
+  $('live-err').textContent = d.live && d.live.error ? 'Hyperliquid unreachable: ' + d.live.error : '';
+  const mk = Object.entries(d.markets || {});
+  $('mk-count').textContent = mk.length ? `${live} of ${mk.length} live` : '';
+  $('markets').innerHTML = mk.map(([coin, m]) => {
+    const o = (d.oracle || {})[coin] || {}, l = liveMeta[`${d.dex}:${coin}`] || liveMeta[coin] || {};
+    const st = m.status !== 'live' ? `<span class="status down">Halted</span>` : o.frozen_since ? `<span class="status warn">Frozen</span>` : `<span class="status up">Live</span>`;
+    return `<tr><td><b>${esc(coin)}</b>${m.multiplier > 1 ? `<span class="mult">×${m.multiplier >= 1e9 ? m.multiplier/1e9+'B' : m.multiplier >= 1e6 ? m.multiplier/1e6+'M' : m.multiplier/1e3+'K'}</span>` : ''}</td>
+      <td>${st}</td><td>${px(o.spot)}</td><td>${l.markPx ? px(l.markPx) : px(o.mark)}</td><td>${l.openInterest ? usd(l.openInterest * (l.markPx || 0)) : '-'}</td></tr>`;
+  }).join('') || '<tr><td colspan="5" class="empty">No markets yet. Run init-dex to list GRAD.</td></tr>';
+
+  const idx = d.index || {}, w = Object.entries(idx.weights || {}).sort((a,b) => b[1]-a[1]), sym = idx.symbols || {};
+  $('rebal').textContent = idx.rebalanced_at ? 'Rebalanced ' + ago(now - idx.rebalanced_at) : '';
+  const maxw = w.length ? w[0][1] : 1;
+  $('index').innerHTML = w.length ? w.slice(0, 12).map(([m, v]) =>
+    `<div class="w"><span style="overflow:hidden;text-overflow:ellipsis">${esc(sym[m] || m.slice(0,6))}</span><span class="bar"><i style="width:${(v/maxw*100).toFixed(0)}%"></i></span><span class="pct">${(v*100).toFixed(1)}%</span></div>`).join('')
+    + (w.length > 12 ? `<div class="sub" style="margin-top:8px">and ${w.length - 12} more</div>` : '')
+    : '<div class="empty">The index is built on the first rebalance.</div>';
+
+  $('events').innerHTML = (d.events || []).map(e =>
+    `<div class="ev k-${esc(e.kind).replace(/[^a-z]/g, '')}"><time>${new Date(e.ts*1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</time><span>${esc(e.message)}</span></div>`).join('')
+    || '<div class="empty">Nothing has happened yet.</div>';
+}
+
+async function tick(){
+  try { render(await (await fetch('/api/state', {cache:'no-store'})).json()); }
+  catch(e){ $('upd').textContent = 'Dashboard server is not responding'; }
+}
+tick(); setInterval(tick, 5000);
+</script>
+</body>
+</html>
