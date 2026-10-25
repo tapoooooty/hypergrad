@@ -1,0 +1,17 @@
+# Alternative to Docker. Install: cp deploy/systemd/*.service /etc/systemd/system/ && systemctl enable --now hypergrad-dashboard
+[Unit]
+Description=HyperGrad dashboard
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=hypergrad
+WorkingDirectory=/opt/hypergrad
+ExecStart=/opt/hypergrad/.venv/bin/python -m hip3 serve
+Restart=always
+RestartSec=10
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

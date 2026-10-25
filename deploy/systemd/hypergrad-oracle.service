@@ -1,0 +1,17 @@
+# Alternative to Docker. Install: cp deploy/systemd/*.service /etc/systemd/system/ && systemctl enable --now hypergrad-oracle
+[Unit]
+Description=HyperGrad oracle
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=hypergrad
+WorkingDirectory=/opt/hypergrad
+ExecStart=/opt/hypergrad/.venv/bin/python -m hip3 oracle
+Restart=always
+RestartSec=3
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,36 @@
+# HyperGrad on a server: docker compose up -d
+# The market maker only starts with: docker compose --profile mm up -d
+x-common: &common
+  build: .
+  image: hypergrad:latest
+  env_file: .env
+  restart: unless-stopped
+  volumes:
+    - ./state:/app/state
+    - ./config.json:/app/config.json:ro
+  logging:
+    driver: json-file
+    options: { max-size: "20m", max-file: "5" }
+
+services:
+  oracle:
+    <<: *common
+    command: ["oracle"]
+
+  manager:
+    <<: *common
+    command: ["manager"]
+
+  dashboard:
+    <<: *common
+    command: ["serve"]
+    environment:
+      DASHBOARD_HOST: 0.0.0.0
+    # Bound to localhost on purpose. Reach it with: ssh -L 8787:localhost:8787 user@server
+    ports:
+      - "127.0.0.1:8787:8787"
+
+  mm:
+    <<: *common
+    command: ["mm"]
+    profiles: ["mm"]
