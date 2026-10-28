@@ -1,0 +1,179 @@
+{
+ "size": [
+  1280,
+  700
+ ],
+ "title": "How HyperGrad fits together",
+ "caption": "Two long-running processes do the work. The manager decides what gets listed; the oracle keeps prices moving.",
+ "groups": [
+  [
+   40,
+   136,
+   300,
+   350,
+   "Data sources"
+  ],
+  [
+   396,
+   136,
+   500,
+   430,
+   "HyperGrad (your machine or VPS)"
+  ]
+ ],
+ "boxes": [
+  [
+   64,
+   164,
+   252,
+   82,
+   "pump.fun API",
+   "Graduated coins, creator wallet, launch time",
+   "ext"
+  ],
+  [
+   64,
+   264,
+   252,
+   82,
+   "DexScreener",
+   "Every Solana pool: price, liquidity, volume",
+   "ext"
+  ],
+  [
+   64,
+   364,
+   252,
+   82,
+   "Solana RPC",
+   "Top holders, dev wallet share",
+   "ext"
+  ],
+  [
+   424,
+   164,
+   444,
+   92,
+   "Manager",
+   "Scans every 10 min, assigns tiers, rebalances GRAD daily, halts dead markets, watches the oracle",
+   "core"
+  ],
+  [
+   424,
+   308,
+   444,
+   92,
+   "Oracle daemon",
+   "Median of pools by liquidity, EMA mark, freeze on bad data, setOracle every 3 s",
+   "core"
+  ],
+  [
+   424,
+   452,
+   206,
+   84,
+   "State",
+   "JSON files shared by every process",
+   "plain"
+  ],
+  [
+   662,
+   452,
+   206,
+   84,
+   "Dashboard",
+   "localhost:8787, read-only",
+   "plain"
+  ],
+  [
+   960,
+   180,
+   268,
+   128,
+   "Hyperliquid HyperCore",
+   "Order books, margin and liquidations for the grad DEX. Stake: 500k HYPE.",
+   "ext"
+  ],
+  [
+   960,
+   388,
+   268,
+   82,
+   "Traders",
+   "Long and short grad:GRAD and single perps",
+   "ext"
+  ],
+  [
+   960,
+   530,
+   268,
+   82,
+   "Telegram",
+   "Freezes, halts, listings, watchdog, heartbeat",
+   "ext"
+  ]
+ ],
+ "edges": [
+  {
+   "d": "M316 205 H360",
+   "noarrow": true
+  },
+  {
+   "d": "M316 305 H360",
+   "noarrow": true
+  },
+  {
+   "d": "M316 405 H360",
+   "noarrow": true
+  },
+  {
+   "d": "M360 205 V405",
+   "noarrow": true
+  },
+  {
+   "d": "M360 210 H422"
+  },
+  {
+   "d": "M360 354 H422"
+  },
+  {
+   "d": "M868 210 H958",
+   "label": "list, halt",
+   "at": [
+    880,
+    186
+   ]
+  },
+  {
+   "d": "M868 354 H912 V280 H958",
+   "label": "setOracle",
+   "at": [
+    874,
+    362
+   ]
+  },
+  {
+   "d": "M527 400 V450"
+  },
+  {
+   "d": "M630 494 H660"
+  },
+  {
+   "d": "M1094 308 V386",
+   "label": "order flow",
+   "at": [
+    1102,
+    336
+   ]
+  },
+  {
+   "d": "M868 384 H900 V571 H958",
+   "label": "alerts",
+   "at": [
+    904,
+    500
+   ]
+  }
+ ],
+ "foot": "Dashed outlines are systems HyperGrad talks to but does not run."
+}

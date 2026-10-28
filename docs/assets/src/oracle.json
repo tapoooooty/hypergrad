@@ -1,0 +1,130 @@
+{
+ "size": [
+  1280,
+  650
+ ],
+ "title": "One oracle tick, every 3 seconds",
+ "caption": "Each live market gets a spot price and a mark price. Bad data never moves a price; it freezes it, and a long freeze halts the market.",
+ "boxes": [
+  [
+   56,
+   170,
+   190,
+   104,
+   "Pool quotes",
+   "Every Solana pool for the coin, from DexScreener",
+   "ext"
+  ],
+  [
+   286,
+   170,
+   190,
+   104,
+   "Weighted median",
+   "Pools weighted by liquidity, so one thin pool can't set the price",
+   "plain"
+  ],
+  [
+   516,
+   170,
+   190,
+   104,
+   "Source check",
+   "Do pools with \u2265 10% of liquidity agree within 15%?",
+   "plain"
+  ],
+  [
+   746,
+   170,
+   190,
+   104,
+   "Scale and smooth",
+   "\u00d71M bundle for tiny prices, EMA for the mark",
+   "plain"
+  ],
+  [
+   976,
+   170,
+   248,
+   104,
+   "setOracle",
+   "oraclePx, markPx and externalPerpPx for every asset in one action",
+   "core"
+  ],
+  [
+   516,
+   354,
+   190,
+   96,
+   "Freeze",
+   "Keep the last price, send an alert",
+   "warn"
+  ],
+  [
+   516,
+   494,
+   190,
+   76,
+   "Halt after 120 s",
+   "Positions settle at mark",
+   "bad"
+  ],
+  [
+   976,
+   354,
+   248,
+   96,
+   "Protocol guardrails",
+   "Mark moves at most 1% per update; prices stay within 10x of the day's open",
+   "ext"
+  ]
+ ],
+ "edges": [
+  {
+   "d": "M246 222 H284"
+  },
+  {
+   "d": "M476 222 H514"
+  },
+  {
+   "d": "M706 222 H744",
+   "label": "<b>yes</b>",
+   "at": [
+    708,
+    196
+   ]
+  },
+  {
+   "d": "M936 222 H974"
+  },
+  {
+   "d": "M611 274 V352",
+   "style": "amber",
+   "label": "<b>no</b>, or no data",
+   "at": [
+    620,
+    300
+   ]
+  },
+  {
+   "d": "M611 450 V492",
+   "style": "red"
+  },
+  {
+   "d": "M1100 274 V352",
+   "dashed": true,
+   "style": "rule"
+  },
+  {
+   "d": "M706 402 H954 V252 H974",
+   "dashed": true,
+   "style": "amber",
+   "label": "last good price is resent",
+   "at": [
+    724,
+    410
+   ]
+  }
+ ],
+ "foot": "The GRAD index is priced the same way: every component goes through the source check, then the chained index level is computed."
+}

@@ -1,0 +1,35 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+:root{--paper:#EDF5F1;--card:#F8FCFA;--ink:#0B2420;--rule:#9DBDB3;--muted:#56746C;--mint:#97FCE4;--amber:#C98A12}
+*{margin:0;box-sizing:border-box}
+body{width:1280px;height:660px;background:var(--paper);font-family:Inter;color:var(--ink);position:relative;overflow:hidden}
+.title{position:absolute;left:56px;top:44px;font:600 26px 'Inter Display';letter-spacing:-.02em}
+.cap{position:absolute;left:56px;top:82px;font:400 15px Inter;color:var(--muted);max-width:760px}
+.step{position:absolute;border:1.5px solid var(--ink);border-bottom:none;border-radius:10px 10px 0 0;padding:18px 20px}
+.step h3{font:600 20px 'Inter Display';letter-spacing:-.01em}
+.step .gets{margin-top:6px;font:500 14px Inter}
+.step dl{margin-top:14px;display:grid;grid-template-columns:auto 1fr;gap:5px 14px;font:400 13px Inter;font-variant-numeric:tabular-nums}
+.step dt{color:var(--muted)}
+.s0{left:56px;width:372px;top:400px;height:200px;background:var(--card)}
+.s1{left:428px;width:390px;top:300px;height:300px;background:#DDF0E9}
+.s2{left:818px;width:406px;top:200px;height:400px;background:var(--ink);color:#EAF7F2}
+.s2 dt{color:#9EC2B8}
+.ground{position:absolute;left:40px;right:40px;top:600px;border-top:1.5px solid var(--ink)}
+.watch{position:absolute;left:56px;top:150px;width:340px;font:400 14px/1.5 Inter;color:var(--muted)}
+.watch b{color:var(--ink);font-weight:600}
+.note{position:absolute;left:56px;top:620px;font:400 13px Inter;color:var(--muted)}
+.tag{display:inline-block;margin-left:8px;padding:1px 8px;border-radius:99px;font:500 12px Inter;vertical-align:3px}
+.s0 .tag{background:#cfe3db;color:var(--ink)}.s1 .tag{background:var(--ink);color:var(--mint)}.s2 .tag{background:var(--mint);color:var(--ink)}
+</style></head><body>
+<div class="title">Three steps from graduate to blue chip</div>
+<div class="cap">Every coin starts on the watchlist. It moves up only while it keeps meeting the thresholds, and moves back down when it stops.</div>
+<div class="watch"><b>Watchlist.</b> Any pump.fun coin above $150K that has not cleared tier 0 yet. Shown on the dashboard with the reason it is still waiting.</div>
+<div class="step s0"><h3>Tier 0<span class="tag">index</span></h3><div class="gets">Joins the GRAD index perp, weight ≤ 10%</div>
+<dl><dt>Market cap</dt><dd>≥ $500K, held 6 h</dd><dt>Pool liquidity</dt><dd>≥ $50K</dd><dt>24h volume</dt><dd>≥ $100K</dd><dt>Age</dt><dd>≥ 24 h</dd></dl></div>
+<div class="step s1"><h3>Tier 1<span class="tag">own perp</span></h3><div class="gets">Single perp, 2x isolated, OI cap $1M</div>
+<dl><dt>Market cap</dt><dd>≥ $500K, held 24 h</dd><dt>Pool liquidity</dt><dd>≥ $100K</dd><dt>24h volume</dt><dd>≥ $500K</dd><dt>Age</dt><dd>≥ 48 h</dd></dl></div>
+<div class="step s2"><h3>Tier 2<span class="tag">blue chip</span></h3><div class="gets">Leverage up to 3x, OI cap $2M</div>
+<dl><dt>Market cap</dt><dd>≥ $5M, held 24 h</dd><dt>Pool liquidity</dt><dd>≥ $500K</dd><dt>24h volume</dt><dd>≥ $1M</dd><dt>Age</dt><dd>≥ 72 h</dd></dl>
+<div style="margin-top:26px;font:400 13px/1.5 Inter;color:#9EC2B8">Every tier also requires: top-10 holders ≤ 30%, dev wallet ≤ 5%, no +300% hour. Thresholds live in config.json.</div></div>
+<div class="ground"></div>
+<div class="note">Hyperliquid's minimum open interest cap is $1M, so young perps rely on the 24 h hold, the liquidity floor and 2x leverage.</div>
+</body></html>

@@ -1,0 +1,41 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+:root{--pine:#0B2420;--pine2:#0E2C27;--line:#1F4A42;--mint:#97FCE4;--mint2:#5FC8B0;--paper:#EAF7F2;--muted:#86A69D;--amber:#F2B544}
+*{margin:0;box-sizing:border-box}
+body{width:1280px;height:480px;background:var(--pine);font-family:Inter,sans-serif;color:var(--paper);overflow:hidden;position:relative}
+.left{position:absolute;left:72px;top:56px;bottom:44px;width:520px;display:flex;flex-direction:column}
+.brand{display:flex;align-items:center;gap:12px;font:600 22px 'Inter Display';letter-spacing:-.01em}
+.brand img{width:36px;height:36px;border-radius:9px}
+h1{margin-top:44px;font:600 52px/1.04 'Inter Display';letter-spacing:-.035em}
+p{margin-top:22px;width:470px;font:400 18px/1.55 Inter;color:var(--muted)}
+p b{color:var(--paper);font-weight:500}
+.foot{margin-top:auto;font:400 14px Inter;color:var(--muted);display:flex;gap:28px}
+.foot span{color:var(--paper)}
+svg.chart{position:absolute;right:0;top:0}
+</style></head><body>
+<div class="left"><div class="brand"><img src="../logo.svg">HyperGrad</div>
+<h1>Perps for the memecoins that made it.</h1>
+<p>A HIP-3 perp DEX on Hyperliquid. Solana coins that graduate from pump.fun join the <b>GRAD index perp at $500K</b> and get <b>their own market once it holds</b>.</p>
+<div class="foot"><div>Market <span>grad:GRAD</span></div><div>Oracle <span>every 3 s</span></div><div>Margin <span>isolated</span></div></div></div>
+<svg class="chart" width="620" height="480" viewBox="0 0 620 480" id="c"></svg>
+<script>
+// market cap path, log scale between $40K and $40M
+const pts=[[0,62e3],[18,75e3],[34,70e3],[50,96e3],[66,150e3],[80,128e3],[96,210e3],[112,330e3],[126,290e3],[140,460e3],[150,540e3],[164,610e3],[178,520e3],[194,700e3],[210,940e3],[226,880e3],[242,1.25e6],[258,1.6e6],[272,1.4e6],[288,2.1e6],[304,2.7e6],[318,2.4e6],[332,3.4e6],[346,4.6e6],[356,5.3e6],[370,6.1e6],[384,5.4e6],[398,7.2e6],[414,9.4e6],[430,8.6e6],[446,11.5e6],[462,14.2e6],[478,12.9e6],[494,16.8e6],[510,19.5e6]];
+const X=x=>40+x, lo=Math.log10(40e3), hi=Math.log10(40e6), Y=v=>440-(Math.log10(v)-lo)/(hi-lo)*380;
+const s=document.getElementById('c'), ns='http://www.w3.org/2000/svg';
+const el=(t,a,txt)=>{const e=document.createElementNS(ns,t);for(const k in a)e.setAttribute(k,a[k]);if(txt)e.textContent=txt;s.appendChild(e);return e};
+// quiet log gridlines
+[[1e5,'$100K'],[1e6,'$1M'],[1e7,'$10M']].forEach(([v,l])=>{el('line',{x1:40,x2:590,y1:Y(v),y2:Y(v),stroke:'#163a33','stroke-width':1});el('text',{x:590,y:Y(v)-6,'text-anchor':'end',fill:'#4f7a70','font-family':'Inter','font-size':12},l)});
+// thresholds
+[[5e5,'#F2B544'],[5e6,'#97FCE4']].forEach(([v,c])=>el('line',{x1:40,x2:590,y1:Y(v),y2:Y(v),stroke:c,'stroke-width':1,'stroke-dasharray':'2 5',opacity:.9}));
+// area + line
+const d=pts.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join(' ');
+el('path',{d:d+` L${X(510)} 460 L${X(0)} 460 Z`,fill:'#97FCE4',opacity:.06});
+el('path',{d,fill:'none',stroke:'#97FCE4','stroke-width':2.2,'stroke-linejoin':'round'});
+// annotations
+const ann=(x,v,c,t1,t2,dx)=>{const cx=X(x),cy=Y(v);el('circle',{cx,cy,r:5,fill:'#0B2420',stroke:c,'stroke-width':2});
+ el('line',{x1:cx+6,y1:cy+6,x2:cx+30,y2:cy+30,stroke:c,'stroke-width':1});
+ el('text',{x:cx+dx,y:cy+48,fill:'#EAF7F2','font-family':'Inter','font-size':14,'font-weight':500,'text-anchor':dx<0?'end':'start'},t1);
+ el('text',{x:cx+dx,y:cy+66,fill:'#86A69D','font-family':'Inter','font-size':13,'text-anchor':dx<0?'end':'start'},t2);};
+ann(146,5e5,'#F2B544','GRAD, then own perp','$500K held, 2x',34);
+ann(353,5e6,'#97FCE4','Blue chip','$5M, up to 3x',34);
+</script></body></html>
