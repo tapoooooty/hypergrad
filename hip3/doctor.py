@@ -48,8 +48,8 @@ def check_config() -> None:
     ok = dex.isalpha() and dex.islower() and 2 <= len(dex) <= 4
     _add("PASS" if ok else "FAIL", "config", "dex.code", f"'{dex}'" + ("" if ok else " must be 2-4 lowercase letters"))
     t = CFG["tiers"]
-    ordered = t["tier0"]["min_mcap_usd"] < t["tier1"]["min_mcap_usd"] < t["tier2"]["min_mcap_usd"]
-    _add("PASS" if ordered else "FAIL", "config", "tier thresholds", "increasing" if ordered else "tier0 < tier1 < tier2 is required")
+    ordered = t["tier0"]["min_mcap_usd"] <= t["tier1"]["min_mcap_usd"] < t["tier2"]["min_mcap_usd"]
+    _add("PASS" if ordered else "FAIL", "config", "tier thresholds", "increasing" if ordered else "tier0 <= tier1 < tier2 is required")
     for name in ("tier1", "tier2"):
         cap = t[name]["oi_cap_usd"]
         _add("PASS" if cap >= 1_000_000 else "FAIL", "config", f"{name}.oi_cap_usd", f"${cap:,} (protocol minimum $1,000,000)")
